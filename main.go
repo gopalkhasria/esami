@@ -16,6 +16,7 @@ func main() {
 	http.HandleFunc("/", controllers.HelloServer)
 	http.HandleFunc("/register", controllers.Register)
 	http.HandleFunc("/regemail", controllers.RegEmail)
+	http.HandleFunc("/confirmEmail", controllers.ConfirmEmail)
 
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))

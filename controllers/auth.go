@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"time"
 	"net/http"
 	"net/smtp"
+	"time"
+
+	"bitcointransaction/models"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -61,10 +63,10 @@ func RegEmail(w http.ResponseWriter, r *http.Request) {
 	body.Write([]byte(fmt.Sprintf("Subject: Registration bitcoin transaction\n%s\n\n", headers)))
 	t.Execute(&body, struct {
 		Token string
-		Name string 
+		Name  string
 	}{
 		Token: tokenString,
-		Name: r.FormValue("name"),
+		Name:  r.FormValue("name"),
 	})
 	auth := smtp.PlainAuth(
 		"",
@@ -89,4 +91,37 @@ func RegEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl, _ := template.ParseFiles("statics/emailSent.html")
 	tmpl.Execute(w, data)
+}
+
+//ConfirmEmail ultima parte per la registrazione
+func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
+	var jwtKey = []byte("my_secret_key")
+	token, ok := r.URL.Query()["token"]
+	if !ok || len(token[0]) < 1 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(token[0], claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	user := models.User{
+		Name:     claims.Name,
+		Email:    claims.Email,
+		Password: claims.Password,
+	}
+	_ = models.InsertUser(user)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
