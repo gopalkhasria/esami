@@ -1,0 +1,16 @@
+<body>
+    <div class="center">
+        <div class="content">
+            <span>Ancora un ultimo passaggio {{.Name}}</span>
+            <br /><br />
+            <span>Clicca sul tasto Conferma email per confermare la registazione</span>
+            <br /><br />
+        </div>
+        <div>
+            <button type="submit">
+                <a href="../confirmEmail?token={{.Token}}" class="button" style="text-decoration: none;">Conferma email</a>
+            </button>
+        </div>
+        </form>
+    </div>
+</body>
