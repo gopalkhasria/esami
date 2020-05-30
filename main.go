@@ -1,13 +1,23 @@
 package main
 
 import (
+	connections "bitcointransaction/connection"
 	"bitcointransaction/controllers"
+
+	"fmt"
+	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
-	port := os.Getenv("PORT")
+	connections.Connect()
+	fmt.Println("Listening on the port 5000")
+
 	http.HandleFunc("/", controllers.HelloServer)
-	http.ListenAndServe(":"+port, nil)
+	http.HandleFunc("/register", controllers.Register)
+
+	fileServer := http.FileServer(http.Dir("./statics/"))
+	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))
+
+	log.Fatal(http.ListenAndServe(":5000", nil))
 }
