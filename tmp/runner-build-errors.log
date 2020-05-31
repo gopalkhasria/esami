@@ -1,3 +1,2 @@
-# bitcointransaction/models
-models\user.go:17:18: undefined: bcrypt
-models\user.go:19:8: undefined: connection
+# bitcointransaction/controllers
+controllers\auth.go:19:3: r.co undefined (type *http.Request has no field or method co)

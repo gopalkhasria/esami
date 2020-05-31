@@ -2,8 +2,12 @@ package models
 
 import (
 	"bitcointransaction/connection"
+	"crypto/rand"
+	"crypto/rsa"
+	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
+	//"golang.org/x/crypto/bcrypt"
 )
 
 //User user model for db
@@ -26,5 +30,9 @@ func InsertUser(data User) int {
 	if err != nil {
 		panic(err)
 	}
+	privateKey, _ := rsa.GenerateKey(rand.Reader, 256)
+	publicKey := privateKey.PublicKey
+	sqlStatement = `INSERT INTO keys (private_key, public_key, user_id) VALUES($1, $2, $3)`
+	connection.Db.QueryRow(sqlStatement, fmt.Sprintf("%v", privateKey), fmt.Sprintf("%v", publicKey), id)
 	return id
 }

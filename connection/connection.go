@@ -33,7 +33,10 @@ func Connect() {
 	if err != nil {
 		panic(err)
 	}
-
+	sqlStatement := `CREATE TABLE IF NOT EXISTS users( id serial PRIMARY KEY, name VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL UNIQUE, pass VARCHAR(70) NOT NULL)`
+	db.QueryRow(sqlStatement)
+	sqlStatement = `CREATE TABLE IF NOT EXISTS keys( id serial PRIMARY KEY, private_key TEXT NOT NULL UNIQUE, public_key TEXT NOT NULL UNIQUE, user_id integer REFERENCES users(id))`
+	db.QueryRow(sqlStatement)
 	Db = db
 	fmt.Println("Successfully connected!")
 }
