@@ -2,12 +2,15 @@ package models
 
 import (
 	"bitcointransaction/connection"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/rsa"
+	"database/sql"
+	"errors"
 	"fmt"
+	"log"
 
 	"golang.org/x/crypto/bcrypt"
-	//"golang.org/x/crypto/bcrypt"
 )
 
 //User user model for db
@@ -30,9 +33,27 @@ func InsertUser(data User) int {
 	if err != nil {
 		panic(err)
 	}
-	privateKey, _ := rsa.GenerateKey(rand.Reader, 256)
-	publicKey := privateKey.PublicKey
+	/*privateKey, _ := rsa.GenerateKey(rand.Reader, 256)
+	publicKey := privateKey.PublicKey*/
+	pubkeyCurve := elliptic.P256()
+	privatekey := new(ecdsa.PrivateKey)
+	privatekey, err = ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
+	pubkey := privatekey.PublicKey
 	sqlStatement = `INSERT INTO keys (private_key, public_key, user_id) VALUES($1, $2, $3)`
-	connection.Db.QueryRow(sqlStatement, fmt.Sprintf("%v", privateKey), fmt.Sprintf("%v", publicKey), id)
+	connection.Db.QueryRow(sqlStatement, fmt.Sprintf("%v", privatekey), fmt.Sprintf("%v", pubkey), id)
 	return id
+}
+
+//FindUser used for find and user
+func FindUser(email string) (User, error) {
+	var data User
+	var id int
+	err := connection.Db.QueryRow(`SELECT * FROM users WHERE email=$1`, email).Scan(&id,&data.Name,&data.Email,&data.Password)
+	if err == sql.ErrNoRows {
+		return data, errors.New("Account doesn't exist")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data, nil
 }

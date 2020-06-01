@@ -12,6 +12,7 @@ import (
 	"bitcointransaction/models"
 
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //HelloServer test controller
@@ -124,4 +125,41 @@ func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	_ = models.InsertUser(user)
 	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+//Login is used for login
+func Login(w http.ResponseWriter, r *http.Request) {
+	tmpl, _ := template.ParseFiles("statics/login.html")
+	if len(r.FormValue("email")) == 0 {
+		tmpl.Execute(w, struct {
+			LogError bool
+			Msg      string
+		}{
+			LogError: false,
+			Msg:      "",
+		})
+	} else {
+		data, err := models.FindUser(r.FormValue("email"))
+		if err != nil {
+			tmpl.Execute(w, struct {
+				LogError bool
+				Msg      string
+			}{
+				LogError: true,
+				Msg:      "Account not find",
+			})
+		} else {
+			if bcrypt.CompareHashAndPassword([]byte(data.Password), []byte(r.FormValue("password"))) != nil {
+				tmpl.Execute(w, struct {
+					LogError bool
+					Msg      string
+				}{
+					LogError: true,
+					Msg:      "Password is incorrect",
+				})
+			} else {
+				http.Redirect(w, r, "/", http.StatusFound)
+			}
+		}
+	}
 }

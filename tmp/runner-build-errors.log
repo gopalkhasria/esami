@@ -1,2 +1,2 @@
 # bitcointransaction/controllers
-controllers\auth.go:19:3: r.co undefined (type *http.Request has no field or method co)
+controllers\auth.go:152:92: syntax error: unexpected ), expecting {
