@@ -45,15 +45,22 @@ func InsertUser(data User) int {
 }
 
 //FindUser used for find and user
-func FindUser(email string) (User, error) {
+func FindUser(email string) (User, int, error) {
 	var data User
 	var id int
-	err := connection.Db.QueryRow(`SELECT * FROM users WHERE email=$1`, email).Scan(&id,&data.Name,&data.Email,&data.Password)
+	err := connection.Db.QueryRow(`SELECT * FROM users WHERE email=$1`, email).Scan(&id, &data.Name, &data.Email, &data.Password)
 	if err == sql.ErrNoRows {
-		return data, errors.New("Account doesn't exist")
+		return data, 0, errors.New("Account doesn't exist")
 	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	return data, nil
+	return data, id, nil
+}
+
+//GetKeys get user key
+func GetKeys(id int) string{
+	var pubkey string
+	connection.Db.QueryRow(`SELECT public_key FROM keys WHERE user_id=$1`, id).Scan(&pubkey)
+	return pubkey
 }

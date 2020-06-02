@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/smtp"
+	"os"
 	"time"
 
 	"bitcointransaction/models"
@@ -14,11 +15,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
-
-//HelloServer test controller
-func HelloServer(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World")
-}
 
 //Register return register page
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -37,13 +33,16 @@ type Claims struct {
 	Name     string `json:"name"`
 	Password string `json:"email"`
 	Email    string `json:"password"`
+	ID       int    `json:"id"`
 	jwt.StandardClaims
 }
 
+//JwtKey key for token
+var JwtKey = os.Getenv("JWTKEY")
+
 //RegEmail send email dor confirm
 func RegEmail(w http.ResponseWriter, r *http.Request) {
-	var jwtKey = []byte("my_secret_key")
-	expirationTime := time.Now().Add(60 * time.Minute)
+	expirationTime := time.Now().Add(2 * time.Hour)
 	claims := &Claims{
 		Name:     r.FormValue("name"),
 		Password: r.FormValue("password"),
@@ -53,7 +52,7 @@ func RegEmail(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -96,7 +95,6 @@ func RegEmail(w http.ResponseWriter, r *http.Request) {
 
 //ConfirmEmail ultima parte per la registrazione
 func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
-	var jwtKey = []byte("my_secret_key")
 	token, ok := r.URL.Query()["token"]
 	if !ok || len(token[0]) < 1 {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -104,7 +102,7 @@ func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	claims := &Claims{}
 	tkn, err := jwt.ParseWithClaims(token[0], claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
+		return JwtKey, nil
 	})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
@@ -139,7 +137,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			Msg:      "",
 		})
 	} else {
-		data, err := models.FindUser(r.FormValue("email"))
+		data, id, err := models.FindUser(r.FormValue("email"))
 		if err != nil {
 			tmpl.Execute(w, struct {
 				LogError bool
@@ -158,6 +156,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 					Msg:      "Password is incorrect",
 				})
 			} else {
+				expirationTime := time.Now().Add(24 * time.Hour)
+				claims := &Claims{
+					Name:  data.Name,
+					Email: data.Email,
+					ID: id,
+					StandardClaims: jwt.StandardClaims{
+						ExpiresAt: expirationTime.Unix(),
+					},
+				}
+				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+				tokenString, err := token.SignedString(JwtKey)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				http.SetCookie(w, &http.Cookie{
+					Name:  "session_token",
+					Value: tokenString,
+				})
 				http.Redirect(w, r, "/", http.StatusFound)
 			}
 		}
