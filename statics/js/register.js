@@ -10,7 +10,7 @@ function register() {
     $('#error').show();
     err = true;
   }
-  if (password.match < 8) {
+  if (password < 8) {
     document.getElementById("msg").innerHTML = " Password errata inserire almeno 8 caratteri";
     $('#error').show();
     err = true;

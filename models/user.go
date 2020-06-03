@@ -47,7 +47,7 @@ func InsertUser(data User) int {
 	privatekey2 := new(ecdsa.PrivateKey)
 	privatekey2, _ = ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
 	pubkey2 := privatekey2.PublicKey
-	transaction := Transaction{sender: fmt.Sprintf("%v", pubkey2), destination: fmt.Sprintf("%v", pubkey), amount: 5}
+	transaction := Transaction{Sender: fmt.Sprintf("%v", pubkey2), Destination: fmt.Sprintf("%v", pubkey), Amount: 5}
 	var h hash.Hash
 	h = sha256.New()
 	io.WriteString(h, fmt.Sprintf("%v", transaction))
@@ -59,7 +59,7 @@ func InsertUser(data User) int {
 	}
 	signature := r.Bytes()
 	signature = append(signature, s.Bytes()...)
-	transaction.sign = hex.EncodeToString(signature)
+	transaction.Sign = hex.EncodeToString(signature)
 	InsertTransaction(transaction)
 
 	return id

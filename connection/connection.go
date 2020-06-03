@@ -47,7 +47,7 @@ func Connect() {
 	sqlStatement = `CREATE TABLE IF NOT EXISTS outputs( id serial PRIMARY KEY, parent int REFERENCES transactions(id), out_transaction int REFERENCES transactions(id),
 		condition TEXT NOT NULL);`
 	db.QueryRow(sqlStatement)
-	sqlStatement = `CREATE TABLE IF NOT EXISTS inputs( id serial PRIMARY KEY, input int REFERENCES transactions(id), out_transaction int REFERENCES transactions(id),
+	sqlStatement = `CREATE TABLE IF NOT EXISTS inputs( id serial PRIMARY KEY, input int REFERENCES transactions(id),
 		pkScript TEXT NOT NULL, keyHash TEXT NOT NULL, sign TEXT NOT NULL);`
 	db.QueryRow(sqlStatement)
 	Db = db

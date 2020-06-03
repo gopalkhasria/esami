@@ -1,0 +1,2 @@
+# bitcointransaction/connection
+connection\socket.go:75:2: i declared but not used
