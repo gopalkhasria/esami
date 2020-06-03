@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/smtp"
-	"os"
 	"time"
 
 	"bitcointransaction/models"
@@ -38,7 +37,7 @@ type Claims struct {
 }
 
 //JwtKey key for token
-var JwtKey = os.Getenv("JWTKEY")
+var JwtKey = []byte("Fpm&P.&1pqlvGZ1X={6`j7n(&E*[u+")
 
 //RegEmail send email dor confirm
 func RegEmail(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +120,14 @@ func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 		Email:    claims.Email,
 		Password: claims.Password,
 	}
-	_ = models.InsertUser(user)
+	id := models.InsertUser(user)
+	claims.ID = id
+	tkn = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := tkn.SignedString(JwtKey) 
+	http.SetCookie(w, &http.Cookie{
+		Name:  "session_token",
+		Value: tokenString,
+	})
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
@@ -160,7 +166,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				claims := &Claims{
 					Name:  data.Name,
 					Email: data.Email,
-					ID: id,
+					ID:    id,
 					StandardClaims: jwt.StandardClaims{
 						ExpiresAt: expirationTime.Unix(),
 					},

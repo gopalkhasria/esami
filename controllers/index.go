@@ -2,11 +2,20 @@ package controllers
 
 import (
 	"bitcointransaction/models"
-	"html/template"
+	"encoding/hex"
 	"net/http"
+	"text/template"
 
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/ripemd160"
 )
+
+type data struct {
+	Name   string `json:"name"`
+	Email  string `json:"email"`
+	PubKey string `json:"Pubkey"`
+	Token  string `json:"token"`
+}
 
 //Index test controller
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -38,16 +47,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		if !tkn.Valid {
 			w.WriteHeader(http.StatusUnauthorized)
 		} else {
-			tmpl, _ := template.ParseFiles("statics/index.html")
-			tmpl.Execute(w, struct{
-				Name string
-				Email string
-				PubKey string
-			}{
-				Name: claims.Name,
-				Email: claims.Email,
-				PubKey: models.GetKeys(claims.ID) ,
-			})
+			tmp, _ := template.ParseFiles("statics/index.html")
+			h := ripemd160.New()
+			h.Write([]byte(models.GetKeys(claims.ID)))
+			data := data{Email: claims.Email, Name: claims.Name, PubKey: string(hex.EncodeToString(h.Sum(nil)))}
+			data.Token, _ = tkn.SignedString(JwtKey)
+			tmp.Execute(w, data)
 		}
 	}
 }

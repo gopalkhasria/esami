@@ -30,3 +30,29 @@ form>div>label {
     font-weight: 500;
     font-size: 1.3rem;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 1rem;
+    font-size: 1.3rem;
+    align-items: center;
+    background-color: rgba(252, 249, 249, 0.952);
+    border-radius: .5rem;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.info>* {
+    margin-bottom: 1rem;
+}
+
+.fixer {
+    padding-right: 8rem;
+    font-size: 1.5rem;
+}
