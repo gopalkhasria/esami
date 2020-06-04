@@ -37,15 +37,16 @@ func SocketStart(w http.ResponseWriter, r *http.Request) {
 }
 func reader(conn *websocket.Conn) {
 	for {
-		_, p, err := conn.ReadMessage()
+		_, _, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
 		// print out that message for clarity
-		fmt.Println(string(p))
+		//fmt.Println(string(p))
 		t := getTransactions()
-		bytes, err := json.Marshal(t)
+		m := msg{Azione: 1, Transaction: t}
+		bytes, err := json.Marshal(m)
 		for client := range Clients {
 			err := client.WriteMessage(websocket.TextMessage, bytes)
 			if err != nil {
@@ -58,27 +59,42 @@ func reader(conn *websocket.Conn) {
 	}
 }
 
+type msg struct {
+	Azione      int           `json:"azione"`
+	Transaction []transaction `json:"transaction"`
+}
+
 type transaction struct {
-	HashID      string `json:"hash"`
-	Destination string `json:"destination"`
-	Sender      string `json:"sender"`
-	Amount      int    `json:"amount"`
-	Sign        string `json:"sign"`
-	Status      int    `json:"status"`
+	ID     int    `json:"id"`
+	HashID string `json:"hash"`
+	Sender string `json:"sender"`
+	Sign   string `json:"sign"`
+	Status int    `json:"status"`
+	Output output `json:"output"`
+}
+
+type output struct {
+	ID       int    `json:"id"`
+	PkScript string `json:"pkScript"`
+	Amount   string `json:"amount"`
+	Used     bool   `json:"used"`
 }
 
 //GetTransactions fetch all transactions
 func getTransactions() []transaction {
 	t := []transaction{}
-	var id int
-	p := false
-	rows, err := Db.Query("SELECT * FROM transactions")
+	/*var id int
+	p := false*/
+	rows, err := Db.Query(`SELECT transactions.id,hash, sender,sign,status, outputs.id,
+		pkscript, amount,used 
+		FROM transactions 
+		INNER JOIN outputs ON transactions.id = outputs.parent`)
 	if err != nil {
 		fmt.Println(err)
 	}
 	for rows.Next() {
 		temp := transaction{}
-		_ = rows.Scan(&id, &temp.HashID, &temp.Sender, &temp.Sign, &temp.Amount, &p, &temp.Status)
+		_ = rows.Scan(&temp.ID, &temp.HashID, &temp.Sender, &temp.Sign, &temp.Status, &temp.Output.ID, &temp.Output.PkScript, &temp.Output.Amount, &temp.Output.Used)
 		t = append(t, temp)
 	}
 	return t

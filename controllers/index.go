@@ -56,3 +56,38 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+//GetTransaction show the transaction
+func GetTransaction(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	tkn := c.Value
+	if len(tkn) == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+	} else {
+		claims := &Claims{}
+		tkn, err := jwt.ParseWithClaims(tkn, claims, func(token *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+		} else {
+			
+		}
+	}
+}

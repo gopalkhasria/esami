@@ -20,19 +20,21 @@ type Transaction struct {
 
 //InsertTransaction inserisco una transazione
 func InsertTransaction(t Transaction) {
+	h := ripemd160.New()
 	sqlStatement := `
-	INSERT INTO transactions (hash, sender, sign, amount, isUsed, status)
-	VALUES ($1, $2, $3, $4, false, 1)
+	INSERT INTO transactions (hash, sender, sign,status)
+	VALUES ($1, $2, $3, 1)
 	RETURNING id`
 	var id int
-	connection.Db.QueryRow(sqlStatement, t.HashID, t.Sender, t.Sign, t.Amount).Scan(&id)
+	h.Write([]byte(t.Sender))
+	connection.Db.QueryRow(sqlStatement, t.HashID, string(hex.EncodeToString(h.Sum(nil))), t.Sign).Scan(&id)
 	sqlStatement = `
-	INSERT INTO outputs (parent, out_transaction, condition)
-	VALUES ($1, $2, $3)
+	INSERT INTO outputs (parent, pkscript, amount, used)
+	VALUES ($1, $2, $3, false)
 	RETURNING id`
-	h := ripemd160.New()
-	h.Write([]byte(t.Destination))
-	err := connection.Db.QueryRow(sqlStatement, id, id, string(hex.EncodeToString(h.Sum(nil)))).Scan(&id)
+	h2 := ripemd160.New()
+	h2.Write([]byte(t.Destination))
+	err := connection.Db.QueryRow(sqlStatement, id, string(hex.EncodeToString(h2.Sum(nil))), t.Amount).Scan(&id)
 	if err != nil {
 		fmt.Println(err)
 	}

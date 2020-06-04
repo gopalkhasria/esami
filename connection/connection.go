@@ -42,13 +42,13 @@ func Connect() {
 	//sqlStatement = `INSERT INTO status(value) VALUES ('not confirmed'), ('confirmed'),('rejected');`
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS transactions( id serial PRIMARY KEY, hash TEXT NOT NULL UNIQUE,
-		sender TEXT NOT NULL UNIQUE,sign TEXT NOT NULL UNIQUE, amount INT, isUsed BOOLEAN, status integer REFERENCES status(id));`
+		sender TEXT NOT NULL UNIQUE,sign TEXT NOT NULL UNIQUE, status integer REFERENCES status(id));`
 	db.QueryRow(sqlStatement)
-	sqlStatement = `CREATE TABLE IF NOT EXISTS outputs( id serial PRIMARY KEY, parent int REFERENCES transactions(id), out_transaction int REFERENCES transactions(id),
-		condition TEXT NOT NULL);`
+	sqlStatement = `CREATE TABLE IF NOT EXISTS outputs( id serial PRIMARY KEY, parent int REFERENCES transactions(id), pkscript TEXT NOT NULL,
+		amount TEXT NOT NULL, used BOOLEAN);`
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS inputs( id serial PRIMARY KEY, input int REFERENCES transactions(id),
-		pkScript TEXT NOT NULL, keyHash TEXT NOT NULL, sign TEXT NOT NULL);`
+		pkScript TEXT NOT NULL, keyHash TEXT NOT NULL, sign TEXT NOT NULL, output int REFERENCES outputs(id));`
 	db.QueryRow(sqlStatement)
 	Db = db
 	fmt.Println("Successfully connected!")

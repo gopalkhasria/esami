@@ -56,3 +56,8 @@ form>div>label {
     padding-right: 8rem;
     font-size: 1.5rem;
 }
+
+.transactions > *{
+    margin: 1rem;
+    padding: 1rem;
+}

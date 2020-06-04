@@ -27,14 +27,17 @@
         <div class="info">
             <span id="name">Welcome {{.Name}}</span>
             <span id="email">your email {{.Email}}</span>
-            <span id="bitAdress">bitcoin adress {{.PubKey}}</span>
+            <span id="bitAdress">bitcoin adress <span id="adress">{{.PubKey}}</span></span>
         </div>
         <div class="info fixer">
             <span>Your amount</span>
-            <span style="text-align: center;">5</span>
+            <span style="text-align: center;"><span id="amount"></span> Bitcoin</span>
         </div>
     </header>
-    <div class="transactiond" id="transactions"></div>
+    <div style="margin: 1rem; font-size: 1.4rem;">
+        <button></buttun>Transactions
+    </div>
+    <div class="transactions" id="transactions"></div>
 </body>
 
 </html>
