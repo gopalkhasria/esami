@@ -49,7 +49,9 @@ function start(msg) {
                 html2 += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
                 myTransaction.push(data.transaction[i].hash);
                 myOutputs.push(data.transaction[i].output);
-                amount += parseInt(data.transaction[i].output.amount);
+                if (data.transaction[i].output) {
+                    amount += parseInt(data.transaction[i].output.amount);
+                }
             }
         }
         document.getElementById("amount").innerText = amount;

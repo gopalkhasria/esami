@@ -99,3 +99,25 @@ func getTransactions() []transaction {
 	}
 	return t
 }
+
+//SendTransaction send specific transaction
+func SendTransaction(id int) {
+	t := transaction{}
+	sqlStatement := `SELECT transactions.id,hash, sender,sign,status, outputs.id,
+		pkscript, amount,used 
+		FROM transactions 
+		INNER JOIN outputs ON transactions.id = outputs.parent WHERE transactions.id=$1`
+	Db.QueryRow(sqlStatement, &t.ID, &t.HashID, &t.Sender, &t.Sign, &t.Status, &t.Output.ID, &t.Output.PkScript, &t.Output.Amount, &t.Output.Used)
+	var send []transaction
+	send = append(send, t)
+	m := msg{Azione: 2, Transaction: send}
+	bytes, err := json.Marshal(m)
+	for client := range Clients {
+		err = client.WriteMessage(websocket.TextMessage, bytes)
+		if err != nil {
+			log.Printf("Websocket error: %s", err)
+			client.Close()
+			delete(Clients, client)
+		}
+	}
+}
