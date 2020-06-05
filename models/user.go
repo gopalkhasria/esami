@@ -6,6 +6,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/x509"
 	"database/sql"
 	"encoding/hex"
 	"errors"
@@ -41,20 +42,22 @@ func InsertUser(data User) int {
 	privatekey := new(ecdsa.PrivateKey)
 	privatekey, err = ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
 	pubkey := privatekey.PublicKey
-	sqlStatement = `INSERT INTO keys (private_key, public_key, user_id) VALUES($1, $2, $3)`
-	connection.Db.QueryRow(sqlStatement, fmt.Sprintf("%v", privatekey), fmt.Sprintf("%v", pubkey), id)
+	sqlStatement = `INSERT INTO keys (private_key,user_id) VALUES($1,$2)`
+	strPriv, err := x509.MarshalECPrivateKey(privatekey)
+	connection.Db.QueryRow(sqlStatement, hex.EncodeToString(strPriv), id)
 
 	privatekey2 := new(ecdsa.PrivateKey)
 	privatekey2, _ = ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
 	pubkey2 := privatekey2.PublicKey
+
 	transaction := Transaction{Sender: fmt.Sprintf("%v", pubkey2), Destination: fmt.Sprintf("%v", pubkey), Amount: 5}
 	var h hash.Hash
 	h = sha256.New()
 	io.WriteString(h, fmt.Sprintf("%v", transaction))
 	signhash := h.Sum(nil)
 	transaction.HashID = string(hex.EncodeToString(signhash))
-	r, s, serr := ecdsa.Sign(rand.Reader, privatekey2, signhash)
-	if serr != nil {
+	r, s, err := ecdsa.Sign(rand.Reader, privatekey2, signhash)
+	if err != nil {
 		fmt.Println(err)
 	}
 	signature := r.Bytes()
@@ -81,7 +84,10 @@ func FindUser(email string) (User, int, error) {
 
 //GetKeys get user key
 func GetKeys(id int) string {
-	var pubkey string
-	connection.Db.QueryRow(`SELECT public_key FROM keys WHERE user_id=$1`, id).Scan(&pubkey)
-	return pubkey
+	var priv string
+	connection.Db.QueryRow(`SELECT private_key FROM keys WHERE user_id=$1`, id).Scan(&priv)
+	privdecode, _ :=  hex.DecodeString(priv)
+	privateKey, _ := x509.ParseECPrivateKey(privdecode)
+	response := fmt.Sprintf("%v", privateKey.PublicKey)
+	return response
 }

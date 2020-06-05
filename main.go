@@ -19,6 +19,7 @@ func main() {
 	http.HandleFunc("/confirmEmail", controllers.ConfirmEmail)
 	http.HandleFunc("/login", controllers.Login)
 	http.HandleFunc("/ws", connections.SocketStart)
+	http.HandleFunc("/makeTransaction", controllers.MakeTransaction)
 
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))

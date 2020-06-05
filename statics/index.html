@@ -35,9 +35,26 @@
         </div>
     </header>
     <div style="margin: 1rem; font-size: 1.4rem;">
-        <button></buttun>Transactions
+        <button class="btn btn-primary" onclick="swithscreen(1);">Transactions</button>
+        <button class="btn btn-primary" onclick="swithscreen(2);">My Transactions</button>
+        <button class="btn btn-primary" onclick="swithscreen(3);">Send bitcoins</button>
     </div>
     <div class="transactions" id="transactions"></div>
+    <div class="transactions" id="MyTransactions" style="display: none;"></div>
+    <div class="sendBit" id="sendBit" style="display: none;">
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="amount" class="form-control" name="amount" aria-describedby="amountHelp" placeholder="5"
+                autocomplete="off" value="" />
+        </div>
+        <div class="form-group">
+            <label for="adress">Adress</label>
+            <input type="adress" class="form-control" name="adress" value="" />
+        </div>
+        <button class="btn btn-success">
+            Send
+        </button>
+    </div>
 </body>
 
 </html>

@@ -35,7 +35,7 @@ func Connect() {
 	}
 	sqlStatement := `CREATE TABLE IF NOT EXISTS users( id serial PRIMARY KEY, name VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL UNIQUE, pass VARCHAR(70) NOT NULL)`
 	db.QueryRow(sqlStatement)
-	sqlStatement = `CREATE TABLE IF NOT EXISTS keys( id serial PRIMARY KEY, private_key TEXT NOT NULL UNIQUE, public_key TEXT NOT NULL UNIQUE, user_id integer REFERENCES users(id))`
+	sqlStatement = `CREATE TABLE IF NOT EXISTS keys( id serial PRIMARY KEY, private_key TEXT NOT NULL UNIQUE, user_id integer REFERENCES users(id))`
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS status( id serial PRIMARY KEY, value varchar(15));`
 	db.QueryRow(sqlStatement)
@@ -47,8 +47,8 @@ func Connect() {
 	sqlStatement = `CREATE TABLE IF NOT EXISTS outputs( id serial PRIMARY KEY, parent int REFERENCES transactions(id), pkscript TEXT NOT NULL,
 		amount TEXT NOT NULL, used BOOLEAN);`
 	db.QueryRow(sqlStatement)
-	sqlStatement = `CREATE TABLE IF NOT EXISTS inputs( id serial PRIMARY KEY, input int REFERENCES transactions(id),
-		pkScript TEXT NOT NULL, keyHash TEXT NOT NULL, sign TEXT NOT NULL, output int REFERENCES outputs(id));`
+	sqlStatement = `CREATE TABLE IF NOT EXISTS inputs( id serial PRIMARY KEY, transaction int REFERENCES transactions(id),
+		keyHash TEXT NOT NULL, sign TEXT NOT NULL, output int REFERENCES outputs(id));`
 	db.QueryRow(sqlStatement)
 	Db = db
 	fmt.Println("Successfully connected!")

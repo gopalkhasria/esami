@@ -1,7 +1,8 @@
 var token;
 var amount = 0;
 var adress;
-var ownTransaction;
+var myTransaction = [];
+var myOutputs = [];
 var socket;
 startWebsocket();
 function startWebsocket() {
@@ -41,17 +42,42 @@ function start(msg) {
     if (data.azione == 1) {
         amount = 0;
         var html = '';
+        var html2 = ''
         for (var i = 0; i < data.transaction.length; i++) {
             html += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
             if (data.transaction[i].output.pkScript == adress) {
-                ownTransaction += data.transaction[i];
+                html2 += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
+                myTransaction.push(data.transaction[i].hash);
+                myOutputs.push(data.transaction[i].output);
                 amount += parseInt(data.transaction[i].output.amount);
             }
         }
         document.getElementById("amount").innerText = amount;
         document.getElementById("transactions").innerHTML = html;
+        document.getElementById("MyTransactions").innerHTML = html2;
     }
     if (socket.readyState !== socket.OPEN) {
         startWebsocket();
+    }
+    console.log(myOutputs);
+}
+
+function swithscreen(screen) {
+    switch (screen) {
+        case 1:
+            document.getElementById("transactions").style.display = 'block';
+            document.getElementById("MyTransactions").style.display = 'none';
+            document.getElementById("sendBit").style.display = 'none';
+            break;
+        case 2:
+            document.getElementById("transactions").style.display = 'none';
+            document.getElementById("MyTransactions").style.display = 'block';
+            document.getElementById("sendBit").style.display = 'none';
+            break;
+        case 3:
+            document.getElementById("transactions").style.display = 'none';
+            document.getElementById("MyTransactions").style.display = 'none';
+            document.getElementById("sendBit").style.display = 'block';
+            break;
     }
 }

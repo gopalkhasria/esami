@@ -57,7 +57,11 @@ form>div>label {
     font-size: 1.5rem;
 }
 
-.transactions > *{
+.transactions>* {
     margin: 1rem;
     padding: 1rem;
+}
+
+.sendBit {
+    margin: 1rem;
 }

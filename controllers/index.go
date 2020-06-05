@@ -87,7 +87,7 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 		if !tkn.Valid {
 			w.WriteHeader(http.StatusUnauthorized)
 		} else {
-			
+
 		}
 	}
 }

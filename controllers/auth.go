@@ -82,6 +82,7 @@ func RegEmail(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Fatal(err)
+		http.Redirect(w, r, "/register", http.StatusFound)
 	}
 	data := RegisterData{
 		Name:     r.FormValue("name"),
@@ -123,7 +124,7 @@ func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	id := models.InsertUser(user)
 	claims.ID = id
 	tkn = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := tkn.SignedString(JwtKey) 
+	tokenString, err := tkn.SignedString(JwtKey)
 	http.SetCookie(w, &http.Cookie{
 		Name:  "session_token",
 		Value: tokenString,
