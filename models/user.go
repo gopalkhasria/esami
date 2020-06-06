@@ -42,9 +42,9 @@ func InsertUser(data User) int {
 	privatekey := new(ecdsa.PrivateKey)
 	privatekey, err = ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
 	pubkey := privatekey.PublicKey
-	sqlStatement = `INSERT INTO keys (private_key,user_id) VALUES($1,$2)`
+	sqlStatement = `INSERT INTO keys (private_key,public_key, user_id) VALUES($1,$2,$3)`
 	strPriv, err := x509.MarshalECPrivateKey(privatekey)
-	connection.Db.QueryRow(sqlStatement, hex.EncodeToString(strPriv), id)
+	connection.Db.QueryRow(sqlStatement, hex.EncodeToString(strPriv), fmt.Sprintf("%v", pubkey), id)
 
 	privatekey2 := new(ecdsa.PrivateKey)
 	privatekey2, _ = ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
@@ -84,10 +84,7 @@ func FindUser(email string) (User, int, error) {
 
 //GetKeys get user key
 func GetKeys(id int) string {
-	var priv string
-	connection.Db.QueryRow(`SELECT private_key FROM keys WHERE user_id=$1`, id).Scan(&priv)
-	privdecode, _ :=  hex.DecodeString(priv)
-	privateKey, _ := x509.ParseECPrivateKey(privdecode)
-	response := fmt.Sprintf("%v", privateKey.PublicKey)
-	return response
+	var publicKey string
+	connection.Db.QueryRow(`SELECT public_key FROM keys WHERE user_id=$1`, id).Scan(&publicKey)
+	return publicKey
 }

@@ -88,7 +88,8 @@ func getTransactions() []transaction {
 	rows, err := Db.Query(`SELECT transactions.id,hash, sender,sign,status, outputs.id,
 		pkscript, amount,used 
 		FROM transactions 
-		INNER JOIN outputs ON transactions.id = outputs.parent`)
+		INNER JOIN outputs ON transactions.id = outputs.parent
+		ORDER BY parent `)
 	if err != nil {
 		fmt.Println(err)
 	}

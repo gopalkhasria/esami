@@ -1,6 +1,6 @@
 var token;
 var amount = 0;
-var adress;
+var address;
 var myTransaction = [];
 var myOutputs = [];
 var socket;
@@ -37,20 +37,30 @@ function inizializzo() {
 }
 
 function start(msg) {
-    adress = document.getElementById("adress").innerText;
+    address = document.getElementById("adress").innerText;
     data = JSON.parse(msg.data);
+    var html = '';
+    var html2 = '';
+    var j = 0;
     if (data.azione == 1) {
+        myOutputs = [];
         amount = 0;
-        var html = '';
-        var html2 = ''
+        var tempHash = "";
         for (var i = 0; i < data.transaction.length; i++) {
-            html += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
-            if (data.transaction[i].output.pkScript == adress) {
+            //console.log(data.transaction[i].hash)
+            if (data.transaction[i].hash != tempHash) {
+                html += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
+                tempHash = data.transaction[i].hash;
+            }
+            //console.log(data.transaction[i].output);
+            if (data.transaction[i].output.pkScript == address) {
                 html2 += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
                 myTransaction.push(data.transaction[i].hash);
                 myOutputs.push(data.transaction[i].output);
-                if (data.transaction[i].output) {
-                    amount += parseInt(data.transaction[i].output.amount);
+                myOutputs[j].amount = parseFloat(myOutputs[j].amount);
+                j++;
+                if (!data.transaction[i].output.used) {
+                    amount += parseFloat(data.transaction[i].output.amount);
                 }
             }
         }
@@ -61,7 +71,7 @@ function start(msg) {
     if (socket.readyState !== socket.OPEN) {
         startWebsocket();
     }
-    console.log(myOutputs);
+    //console.log(myOutputs);
 }
 
 function swithscreen(screen) {
@@ -81,5 +91,31 @@ function swithscreen(screen) {
             document.getElementById("MyTransactions").style.display = 'none';
             document.getElementById("sendBit").style.display = 'block';
             break;
+    }
+}
+
+function maketransaction() {
+    var data = {
+        amount: parseFloat(document.getElementById("cointosend").value),
+        address: document.getElementById("address").value,
+        pubkey: address,
+        outputs: myOutputs
+    }
+    if (data.amount > amount) {
+        alert("Non hai tutti questi soldi");
+    } else {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", token);
+        myHeaders.append("Content-Type", "application/json");
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+        fetch("http://localhost:5000/makeTransaction", requestOptions)
+            .then(response => response.text())
+            .then(result => location.reload())
+            .catch(error => console.log('error', error));
     }
 }

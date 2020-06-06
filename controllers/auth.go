@@ -41,7 +41,7 @@ var JwtKey = []byte("Fpm&P.&1pqlvGZ1X={6`j7n(&E*[u+")
 
 //RegEmail send email dor confirm
 func RegEmail(w http.ResponseWriter, r *http.Request) {
-	expirationTime := time.Now().Add(2 * time.Hour)
+	expirationTime := time.Now().Add(60 * time.Hour)
 	claims := &Claims{
 		Name:     r.FormValue("name"),
 		Password: r.FormValue("password"),
@@ -69,14 +69,14 @@ func RegEmail(w http.ResponseWriter, r *http.Request) {
 	})
 	auth := smtp.PlainAuth(
 		"",
-		"bitcointransaction01@gmail.com",
+		"bitwallet936@gmail.com",
 		"Qwertyofpc_1",
 		"smtp.gmail.com",
 	)
 	err = smtp.SendMail(
 		"smtp.gmail.com:587",
 		auth,
-		"bitcointransaction01@gmail.com",
+		"bitwallet936@gmail.com",
 		[]string{r.FormValue("email")},
 		body.Bytes(),
 	)

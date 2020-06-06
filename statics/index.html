@@ -44,14 +44,14 @@
     <div class="sendBit" id="sendBit" style="display: none;">
         <div class="form-group">
             <label for="amount">Amount</label>
-            <input type="amount" class="form-control" name="amount" aria-describedby="amountHelp" placeholder="5"
+            <input type="amount" class="form-control" name="amount" id="cointosend" aria-describedby="amountHelp" placeholder="5"
                 autocomplete="off" value="" />
         </div>
         <div class="form-group">
-            <label for="adress">Adress</label>
-            <input type="adress" class="form-control" name="adress" value="" />
+            <label for="address">Adress</label>
+            <input type="text" class="form-control" name="adress" id="address"value="" />
         </div>
-        <button class="btn btn-success">
+        <button class="btn btn-success" onclick="maketransaction();">
             Send
         </button>
     </div>
