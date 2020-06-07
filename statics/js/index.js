@@ -104,6 +104,7 @@ function maketransaction() {
     if (data.amount > amount) {
         alert("Non hai tutti questi soldi");
     } else {
+        console.log(JSON.stringify(data));
         var myHeaders = new Headers();
         myHeaders.append("Authorization", token);
         myHeaders.append("Content-Type", "application/json");

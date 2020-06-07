@@ -41,8 +41,8 @@ func Connect() {
 	db.QueryRow(sqlStatement)
 	//sqlStatement = `INSERT INTO status(value) VALUES ('not confirmed'), ('confirmed'),('rejected');`
 	db.QueryRow(sqlStatement)*/
-	sqlStatement = `CREATE TABLE IF NOT EXISTS transactions( id serial PRIMARY KEY, hash TEXT NOT NULL UNIQUE,
-		sender TEXT NOT NULL UNIQUE,sign TEXT NOT NULL UNIQUE, status int);`
+	sqlStatement = `CREATE TABLE IF NOT EXISTS transactions( id serial PRIMARY KEY, hash TEXT NOT NULL,
+		sender TEXT NOT NULL,sign TEXT NOT NULL, status int);`
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS outputs( id serial PRIMARY KEY, parent int REFERENCES transactions(id), pkscript TEXT NOT NULL,
 		amount TEXT NOT NULL, used BOOLEAN);`

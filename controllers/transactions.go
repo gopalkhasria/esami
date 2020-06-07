@@ -57,7 +57,7 @@ func MakeTransaction(w http.ResponseWriter, r *http.Request) {
 	} else {
 		//fmt.Println(b)
 		verifySign, CurrentAmount := verifyOutput(b.Ouputs, claims.ID)
-		if CurrentAmount == 0 {
+		if CurrentAmount == 0 && b.Amount > CurrentAmount {
 			fmt.Println("Error")
 		}
 		var h hash.Hash
@@ -85,32 +85,38 @@ func MakeTransaction(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 		var tempID int
-		for i, t := range b.Ouputs {
-			sqlStatement := `
+		j := 0
+		for _, t := range b.Ouputs {
+			if !t.Used {
+				sqlStatement := `
 			INSERT INTO inputs (transaction, keyHash, sign,output)
-			VALUES ($1, $2, $3, $4)`
-			err := connection.Db.QueryRow(sqlStatement, id, pub, verifySign[i], t.ID).Scan(&tempID)
-			if err != nil {
-				fmt.Println(err)
-			}
-			sqlStatement = `UPDATE outputs
+			VALUES ($1, $2, $3, $4) RETURNING id`
+				err := connection.Db.QueryRow(sqlStatement, id, pub, verifySign[j], t.ID).Scan(&tempID)
+				if err != nil {
+					fmt.Println("Errore nella inmput")
+					fmt.Println(err)
+				}
+				j++
+				sqlStatement = `UPDATE outputs
 				SET used = true
 				WHERE id = $1;`
-			connection.Db.QueryRow(sqlStatement, t.ID)
-			if err != nil {
-				fmt.Println(err)
+				connection.Db.QueryRow(sqlStatement, t.ID)
+				if err != nil {
+					fmt.Println(err)
+				}
 			}
 		}
 
 		sqlStatement = `
 				INSERT INTO outputs (parent, pkscript, amount,used)
 				VALUES ($1, $2, $3, false)`
-		connection.Db.QueryRow(sqlStatement, id, b.Address, b.Amount)
+		connection.Db.QueryRow(sqlStatement, id, b.Address, b.Amount).Scan(&tempID)
 		CurrentAmount = CurrentAmount - b.Amount
 		sqlStatement = `
 				INSERT INTO outputs (parent, pkscript, amount,used)
 				VALUES ($1, $2, $3, false)`
-		connection.Db.QueryRow(sqlStatement, id, b.PubKey, CurrentAmount)
+		fmt.Println(CurrentAmount)
+		connection.Db.QueryRow(sqlStatement, id, b.PubKey, CurrentAmount).Scan(&tempID)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}
@@ -124,7 +130,7 @@ func verifyOutput(data []output, id int) ([]string, float32) {
 		var temp output
 		sqlStatement := `SELECT pkscript, amount, used,hash FROM outputs
 						INNER JOIN transactions ON transactions.id = outputs.parent
-						WHERE transactions.id=$1`
+						WHERE outputs.id=$1`
 		err := connection.Db.QueryRow(sqlStatement, t.ID).Scan(&temp.PkScript, &temp.Amount, &temp.Used, &hash)
 		if err != nil {
 			fmt.Println(err)
