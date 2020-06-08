@@ -76,8 +76,8 @@ func MakeTransaction(w http.ResponseWriter, r *http.Request) {
 		signature := r.Bytes()
 		signature = append(signature, s.Bytes()...)
 		sqlStatement := `
-		INSERT INTO transactions (hash, sender, sign,status)
-		VALUES ($1, $2, $3, 1)
+		INSERT INTO transactions (hash, sender, sign,block)
+		VALUES ($1, $2, $3, '-1')
 		RETURNING id`
 		var id int
 		err := connection.Db.QueryRow(sqlStatement, string(hex.EncodeToString(signhash)), b.PubKey, hex.EncodeToString(signature)).Scan(&id)
@@ -120,6 +120,7 @@ func MakeTransaction(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}
+	go models.CheckTransactions()
 }
 
 func verifyOutput(data []output, id int) ([]string, float32) {

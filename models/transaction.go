@@ -15,15 +15,15 @@ type Transaction struct {
 	Sender      string `json:"sender"`
 	Amount      int    `json:"amount"`
 	Sign        string `json:"sign"`
-	Status      int    `json:"status"`
+	Block       int    `json:"block"`
 }
 
 //InsertTransaction inserisco una transazione
 func InsertTransaction(t Transaction) {
 	h := ripemd160.New()
 	sqlStatement := `
-	INSERT INTO transactions (hash, sender, sign,status)
-	VALUES ($1, $2, $3, 1)
+	INSERT INTO transactions (hash, sender, sign,block)
+	VALUES ($1, $2, $3, '-1')
 	RETURNING id`
 	var id int
 	h.Write([]byte(t.Sender))

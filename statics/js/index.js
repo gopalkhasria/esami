@@ -1,5 +1,6 @@
 var token;
 var amount = 0;
+var tempAmount = 0;
 var address;
 var myTransaction = [];
 var myOutputs = [];
@@ -45,11 +46,15 @@ function start(msg) {
     if (data.azione == 1) {
         myOutputs = [];
         amount = 0;
+        tempAmount = 0;
         var tempHash = "";
+        console.log(data)
         for (var i = 0; i < data.transaction.length; i++) {
             //console.log(data.transaction[i].hash)
             if (data.transaction[i].hash != tempHash) {
-                html += '<div class="card"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a></diV>';
+                html += '<div class="card"><div class="trans-fix"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a><span class="dot ';
+                if (data.transaction[i].block == "-1" || data.transaction[i].block == "-2") html += 'red'; else html += 'green';
+                html += '"></span></div></div>'
                 tempHash = data.transaction[i].hash;
             }
             //console.log(data.transaction[i].output);
@@ -60,11 +65,16 @@ function start(msg) {
                 myOutputs[j].amount = parseFloat(myOutputs[j].amount);
                 j++;
                 if (!data.transaction[i].output.used) {
-                    amount += parseFloat(data.transaction[i].output.amount);
+                    if (data.transaction[i].block == "-1" || data.transaction[i].block == "-2") {
+                        tempAmount += parseFloat(data.transaction[i].output.amount);
+                        console.log("gg")
+                    }
+                    else amount += parseFloat(data.transaction[i].output.amount);
                 }
             }
         }
         document.getElementById("amount").innerText = amount;
+        document.getElementById("tempamount").innerText = tempAmount;
         document.getElementById("transactions").innerHTML = html;
         document.getElementById("MyTransactions").innerHTML = html2;
     }

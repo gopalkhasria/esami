@@ -6,6 +6,10 @@
     font-family: 'Lato', sans-serif;
 }
 
+body {
+    margin: 0 50%;
+}
+
 .register {
     margin: 0;
     position: absolute;
@@ -64,4 +68,23 @@ form>div>label {
 
 .sendBit {
     margin: 1rem;
+}
+
+.dot {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.trans-fix {
+    display: flex;
+    justify-content: space-between;
 }

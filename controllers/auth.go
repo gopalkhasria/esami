@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bitcointransaction/models"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -8,8 +9,6 @@ import (
 	"net/http"
 	"net/smtp"
 	"time"
-
-	"bitcointransaction/models"
 
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"

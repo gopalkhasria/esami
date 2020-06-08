@@ -44,18 +44,22 @@ func reader(conn *websocket.Conn) {
 		}
 		// print out that message for clarity
 		//fmt.Println(string(p))
-		t := getTransactions()
-		m := msg{Azione: 1, Transaction: t}
-		bytes, err := json.Marshal(m)
-		for client := range Clients {
-			err := client.WriteMessage(websocket.TextMessage, bytes)
-			if err != nil {
-				log.Printf("Websocket error: %s", err)
-				client.Close()
-				delete(Clients, client)
-			}
-		}
+		SendMsg()	
+	}
+}
 
+//SendMsg is for send the transactions to client
+func SendMsg() {
+	t := getTransactions()
+	m := msg{Azione: 1, Transaction: t}
+	bytes, _ := json.Marshal(m)
+	for client := range Clients {
+		err := client.WriteMessage(websocket.TextMessage, bytes)
+		if err != nil {
+			log.Printf("Websocket error: %s", err)
+			client.Close()
+			delete(Clients, client)
+		}
 	}
 }
 
@@ -69,7 +73,7 @@ type transaction struct {
 	HashID string `json:"hash"`
 	Sender string `json:"sender"`
 	Sign   string `json:"sign"`
-	Status int    `json:"status"`
+	Block  int    `json:"block"`
 	Output output `json:"output"`
 }
 
@@ -85,7 +89,7 @@ func getTransactions() []transaction {
 	t := []transaction{}
 	/*var id int
 	p := false*/
-	rows, err := Db.Query(`SELECT transactions.id,hash, sender,sign,status, outputs.id,
+	rows, err := Db.Query(`SELECT transactions.id,hash, sender,sign,block, outputs.id,
 		pkscript, amount,used 
 		FROM transactions 
 		INNER JOIN outputs ON transactions.id = outputs.parent
@@ -95,7 +99,7 @@ func getTransactions() []transaction {
 	}
 	for rows.Next() {
 		temp := transaction{}
-		_ = rows.Scan(&temp.ID, &temp.HashID, &temp.Sender, &temp.Sign, &temp.Status, &temp.Output.ID, &temp.Output.PkScript, &temp.Output.Amount, &temp.Output.Used)
+		_ = rows.Scan(&temp.ID, &temp.HashID, &temp.Sender, &temp.Sign, &temp.Block, &temp.Output.ID, &temp.Output.PkScript, &temp.Output.Amount, &temp.Output.Used)
 		t = append(t, temp)
 	}
 	return t
@@ -108,7 +112,7 @@ func SendTransaction(id int) {
 		pkscript, amount,used 
 		FROM transactions 
 		INNER JOIN outputs ON transactions.id = outputs.parent WHERE transactions.id=$1`
-	Db.QueryRow(sqlStatement, &t.ID, &t.HashID, &t.Sender, &t.Sign, &t.Status, &t.Output.ID, &t.Output.PkScript, &t.Output.Amount, &t.Output.Used)
+	Db.QueryRow(sqlStatement, &t.ID, &t.HashID, &t.Sender, &t.Sign, &t.Block, &t.Output.ID, &t.Output.PkScript, &t.Output.Amount, &t.Output.Used)
 	var send []transaction
 	send = append(send, t)
 	m := msg{Azione: 2, Transaction: send}

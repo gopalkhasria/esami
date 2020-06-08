@@ -37,18 +37,20 @@ func Connect() {
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS keys( id serial PRIMARY KEY, private_key TEXT NOT NULL UNIQUE,public_key TEXT NOT NULL UNIQUE, user_id integer REFERENCES users(id))`
 	db.QueryRow(sqlStatement)
-	/*sqlStatement = `CREATE TABLE IF NOT EXISTS status( id serial PRIMARY KEY, value varchar(15));`
-	db.QueryRow(sqlStatement)
-	//sqlStatement = `INSERT INTO status(value) VALUES ('not confirmed'), ('confirmed'),('rejected');`
-	db.QueryRow(sqlStatement)*/
 	sqlStatement = `CREATE TABLE IF NOT EXISTS transactions( id serial PRIMARY KEY, hash TEXT NOT NULL,
-		sender TEXT NOT NULL,sign TEXT NOT NULL, status int);`
+		sender TEXT NOT NULL,sign TEXT NOT NULL, block TEXT);`
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS outputs( id serial PRIMARY KEY, parent int REFERENCES transactions(id), pkscript TEXT NOT NULL,
 		amount TEXT NOT NULL, used BOOLEAN);`
 	db.QueryRow(sqlStatement)
 	sqlStatement = `CREATE TABLE IF NOT EXISTS inputs( id serial PRIMARY KEY, transaction int REFERENCES transactions(id),
 		keyHash TEXT NOT NULL, sign TEXT NOT NULL, output int REFERENCES outputs(id));`
+	db.QueryRow(sqlStatement)
+	sqlStatement = `CREATE TABLE IF NOT EXISTS block( id serial PRIMARY KEY, hash TEXT NOT NULL, nounce int NOT NULL, previousHash TEXT NOT NULL, created TIMESTAMP DEFAULT now())`
+	db.QueryRow(sqlStatement)
+	//sqlStatement = `TRUNCATE block CASCADE`
+	//db.QueryRow(sqlStatement)
+	sqlStatement = `INSERT INTO block (hash, nounce, previousHash) VALUES ('0', 0, '0')`
 	db.QueryRow(sqlStatement)
 	Db = db
 	fmt.Println("Successfully connected!")

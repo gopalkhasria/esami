@@ -3,6 +3,7 @@ package main
 import (
 	connections "bitcointransaction/connection"
 	"bitcointransaction/controllers"
+	"bitcointransaction/models"
 
 	"fmt"
 	"log"
@@ -20,7 +21,7 @@ func main() {
 	http.HandleFunc("/login", controllers.Login)
 	http.HandleFunc("/ws", connections.SocketStart)
 	http.HandleFunc("/makeTransaction", controllers.MakeTransaction)
-
+	go models.CheckTransactions()
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))
 
