@@ -7,7 +7,7 @@ var myOutputs = [];
 var socket;
 startWebsocket();
 function startWebsocket() {
-    socket = new WebSocket("ws://guarded-beyond-14215.herokuapp.com//ws");
+    socket = new WebSocket("wss://guarded-beyond-14215.herokuapp.com//ws");
     socket.onopen = () => {
         console.log("Successfully Connected");
         socket.send("Hi From the Client!")
