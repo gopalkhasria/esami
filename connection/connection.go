@@ -50,7 +50,7 @@ func Connect() {
 	db.QueryRow(sqlStatement)
 	//sqlStatement = `TRUNCATE block CASCADE`
 	//db.QueryRow(sqlStatement)
-	sqlStatement = `INSERT INTO block (hash, nounce, previousHash) VALUES ('0', 0, '0')`
+	//sqlStatement = `INSERT INTO block (hash, nounce, previousHash) VALUES ('0', 0, '0')`
 	db.QueryRow(sqlStatement)
 	Db = db
 	fmt.Println("Successfully connected!")

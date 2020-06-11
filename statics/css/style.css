@@ -1,13 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-
 * {
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
-}
-
-body {
-    margin: 0 50%;
 }
 
 .register {
@@ -18,6 +12,9 @@ body {
     width: 30%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
 }
 
 form>input {
@@ -42,8 +39,14 @@ form>div>label {
     margin: 1rem;
     font-size: 1.3rem;
     align-items: center;
-    background-color: rgba(252, 249, 249, 0.952);
+    background-color: rgb(255, 255, 255);
     border-radius: .5rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.header:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .info {
@@ -61,9 +64,23 @@ form>div>label {
     font-size: 1.5rem;
 }
 
+.data {
+    margin-top: 2rem;
+    border-radius: .5rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    padding: 2rem;
+}
+
+.data:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
 .transactions>* {
     margin: 1rem;
     padding: 1rem;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
 }
 
 .sendBit {
@@ -87,4 +104,37 @@ form>div>label {
 .trans-fix {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.wrapper {
+    height: 20rem;
+    overflow-y: scroll;
+}
+
+.body-wrapper {
+    margin: 0;
+    position: absolute;
+    top: 47%;
+    left: 50%;
+    width: 70%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }

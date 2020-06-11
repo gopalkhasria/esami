@@ -20,42 +20,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
     <title>Bitcoin transaction</title>
     <script src="statics/js/index.js"></script>
+    <link rel="stylesheet" href="statics/css/background.css">
 </head>
 
-<body onload="inizializzo()">
-    <header class="header">
-        <div class="info">
-            <span id="name">Welcome {{.Name}}</span>
-            <span id="email">your email {{.Email}}</span>
-            <span id="bitAdress">bitcoin adress <span id="adress">{{.PubKey}}</span></span>
-        </div>
-        <div class="info fixer">
-            <span>Your amount</span>
-            <span style="text-align: center;"><span id="amount"></span> Bitcoin</span>
-            <span>Waiting for confirm</span>
-            <span style="text-align: center;"><span id="tempamount"></span> Bitcoin</span>
-        </div>
-    </header>
-    <div style="margin: 1rem; font-size: 1.4rem;">
-        <button class="btn btn-primary" onclick="swithscreen(1);">Transactions</button>
-        <button class="btn btn-primary" onclick="swithscreen(2);">My Transactions</button>
-        <button class="btn btn-primary" onclick="swithscreen(3);">Send bitcoins</button>
+<body onload="inizializzo()" style="overflow: hidden;">
+    <div class="area">
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
     </div>
-    <div class="transactions" id="transactions"></div>
-    <div class="transactions" id="MyTransactions" style="display: none;"></div>
-    <div class="sendBit" id="sendBit" style="display: none;">
-        <div class="form-group">
-            <label for="amount">Amount</label>
-            <input type="amount" class="form-control" name="amount" id="cointosend" aria-describedby="amountHelp" placeholder="5"
-                autocomplete="off" value="" />
+    <div class="body-wrapper register">
+        <header class="header">
+            <div class="info">
+                <span id="name">Welcome {{.Name}}</span>
+                <span id="email">your email {{.Email}}</span>
+                <span id="bitAdress">bitcoin adress <span id="adress">{{.PubKey}}</span></span>
+            </div>
+            <div class="info fixer">
+                <div>
+                    <span style="text-align: center;">Balance: </span>
+                    <span style="text-align: center;"><span id="amount"></span> Bitcoin</span>
+                </div>
+                <span>Waiting for confirm</span>
+                <span style="text-align: center;"><span id="tempamount"></span> Bitcoin</span>
+            </div>
+        </header>
+        <div class="data">
+            <div style="margin: 1rem; font-size: 1.4rem;">
+                <button class="btn btn-primary" onclick="swithscreen(1);">Transactions</button>
+                <button class="btn btn-primary" onclick="swithscreen(2);">My Transactions</button>
+                <button class="btn btn-primary" onclick="swithscreen(3);">Send bitcoins</button>
+            </div>
+            <div class="wrapper">
+                <div class="transactions" id="transactions"></div>
+                <div class="transactions" id="MyTransactions" style="display: none;"></div>
+                <div class="sendBit" id="sendBit" style="display: none;">
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="amount" class="form-control" name="amount" id="cointosend"
+                            aria-describedby="amountHelp" placeholder="5" autocomplete="off" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Adress</label>
+                        <input type="text" class="form-control" name="adress" id="address" value="" />
+                    </div>
+                    <button class="btn btn-success" onclick="maketransaction();">
+                        Send
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="address">Adress</label>
-            <input type="text" class="form-control" name="adress" id="address"value="" />
-        </div>
-        <button class="btn btn-success" onclick="maketransaction();">
-            Send
-        </button>
     </div>
 </body>
 

@@ -21,6 +21,7 @@ func main() {
 	http.HandleFunc("/login", controllers.Login)
 	http.HandleFunc("/ws", connections.SocketStart)
 	http.HandleFunc("/makeTransaction", controllers.MakeTransaction)
+	http.HandleFunc("/transaction", controllers.GetTransaction)
 	go models.CheckTransactions()
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))

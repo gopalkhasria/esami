@@ -44,7 +44,7 @@ func reader(conn *websocket.Conn) {
 		}
 		// print out that message for clarity
 		//fmt.Println(string(p))
-		SendMsg()	
+		SendMsg()
 	}
 }
 

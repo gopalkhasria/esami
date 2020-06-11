@@ -18,10 +18,25 @@
     integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
     crossorigin="anonymous"></script>
   <script src="statics/js/register.js"></script>
+  <link rel="stylesheet" href="statics/css/background.css">
   <title>Bitcoin transaction</title>
 </head>
 
-<body onload="$('#error').hide();">
+<body onload="$('#error').hide();" style="overflow: hidden;">
+  <div class="area">
+    <ul class="circles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
   <div class="register">
     <div class="alert alert-danger fade show" role="alert" id="error">
       <span id="msg">You should check in on some of those fields below.</span>
@@ -50,7 +65,7 @@
           Register
         </button>
       </form>
-      <a href="/login">Login</a>
+      <a href="/login" style="margin-top: .5rem !important;">Login</a>
     </div>
   </div>
 </body>

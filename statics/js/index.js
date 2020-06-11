@@ -7,7 +7,7 @@ var myOutputs = [];
 var socket;
 startWebsocket();
 function startWebsocket() {
-    socket = new WebSocket("ws://localhost:5000/ws");
+    socket = new WebSocket("ws://guarded-beyond-14215.herokuapp.com//ws");
     socket.onopen = () => {
         console.log("Successfully Connected");
         socket.send("Hi From the Client!")
@@ -49,7 +49,7 @@ function start(msg) {
         tempAmount = 0;
         var tempHash = "";
         console.log(data)
-        for (var i = 0; i < data.transaction.length; i++) {
+        for (var i = data.transaction.length - 1; i >= 0; i--) {
             //console.log(data.transaction[i].hash)
             if (data.transaction[i].hash != tempHash) {
                 html += '<div class="card"><div class="trans-fix"><a href="/transaction?id=' + data.transaction[i].id + '">' + data.transaction[i].hash + '</a><span class="dot ';

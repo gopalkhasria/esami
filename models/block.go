@@ -35,6 +35,7 @@ func CheckTransactions() {
 }
 
 func confirmTransactions(data []string) {
+	fmt.Println("Start mining")
 	nonce := -1
 	var hash string
 	var inputFmt string
@@ -46,7 +47,7 @@ func confirmTransactions(data []string) {
 	fmt.Println(hash)
 	var previousHash string
 	var id string
-	sqlStatement := `SELECT previousHash FROM block ORDER BY id DESC `
+	sqlStatement := `SELECT hash FROM block ORDER BY id DESC `
 	connection.Db.QueryRow(sqlStatement).Scan(&previousHash)
 	sqlStatement = `INSERT INTO block (hash, nounce, previousHash) VALUES ($1, $2, $3) returning Id`
 	err := connection.Db.QueryRow(sqlStatement, hash, nonce, previousHash).Scan(&id)

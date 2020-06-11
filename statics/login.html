@@ -17,17 +17,33 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
-    <script src="statics/js/register.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="statics/css/background.css">
     <title>Bitcoin transaction</title>
 </head>
 
-<body>
+<body style="overflow: hidden;">
+    <div class="area">
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
     <div class="register">
         {{if .LogError}}
         <div class="alert alert-danger fade show" role="alert" id="error">
             <span id="msg">{{.Msg}}</span>
         </div>
         {{end}}
+        <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33"></div>
         <div class="form">
             <form method="POST" action="login" id="login">
                 <div class="form-group">
@@ -44,7 +60,8 @@
                 </button>
             </form>
         </div>
-        <a href="/register">Register</a>
+        <a href="/register" style="margin-top: .5rem !important;">Register</a>
+    </div>
     </div>
 </body>
 
