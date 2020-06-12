@@ -127,7 +127,7 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 					WHERE transactions.id = $1`
 			rows, err := connection.Db.Query(sqlStatement, id[0])
 			if err != nil {
-				fmt.Println(err)
+				http.ServeFile(w, r, "statics/CoinbaseError.html")
 			}
 			var response TransactionResult
 			var output []OutputTransaction
@@ -159,8 +159,83 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 			response.Output = output
+			if response.Hash == "" {
+				http.ServeFile(w, r, "statics/CoinbaseError.html")
+			}
 			tmp, _ := template.ParseFiles("statics/showTransactions.html")
 			tmp.Execute(w, response)
+		}
+	}
+}
+
+//Block block data
+type Block struct {
+	ID           string
+	Hash         string
+	Nounce       string
+	PreviousHash string
+	TimeStamp    string
+	Transactions []Transaction
+}
+
+//Transaction transactions of block
+type Transaction struct {
+	ID   string
+	Hash string
+}
+
+//GetBlock get a specific bloxk data
+func GetBlock(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	tkn := c.Value
+	if len(tkn) == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+	} else {
+		claims := &Claims{}
+		tkn, err := jwt.ParseWithClaims(tkn, claims, func(token *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+		} else {
+			id, ok := r.URL.Query()["id"]
+			if !ok || len(id[0]) < 1 {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			var Response Block
+			sqlStatement := `SELECT * FROM block WHERE id = $1`
+			err := connection.Db.QueryRow(sqlStatement, id[0]).Scan(&Response.ID, &Response.Hash, &Response.Nounce, &Response.PreviousHash, &Response.TimeStamp)
+			if err != nil {
+				w.WriteHeader(http.StatusUnauthorized)
+			}
+			sqlStatement = `SELECT hash, id FROM transactions WHERE block = $1`
+			rows, err := connection.Db.Query(sqlStatement, id[0])
+			var transactions []Transaction
+			for rows.Next() {
+				var t Transaction
+				err = rows.Scan(&t.Hash, &t.ID)
+				transactions = append(transactions, t)
+			}
+			Response.Transactions = transactions
+			tmp, _ := template.ParseFiles("statics/showBlock.html")
+			tmp.Execute(w, Response)
 		}
 	}
 }

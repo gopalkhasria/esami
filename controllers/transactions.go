@@ -120,7 +120,9 @@ func MakeTransaction(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}
-	go models.CheckTransactions()
+	if models.Work == 0 {
+		go models.CheckTransactions()
+	}
 }
 
 func verifyOutput(data []output, id int) ([]string, float32) {

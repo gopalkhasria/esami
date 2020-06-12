@@ -23,9 +23,10 @@ func main() {
 	http.HandleFunc("/ws", connections.SocketStart)
 	http.HandleFunc("/makeTransaction", controllers.MakeTransaction)
 	http.HandleFunc("/transaction", controllers.GetTransaction)
+	http.HandleFunc("/block", controllers.GetBlock)
 	go models.CheckTransactions()
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))
 
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }

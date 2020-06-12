@@ -7,7 +7,7 @@ var myOutputs = [];
 var socket;
 startWebsocket();
 function startWebsocket() {
-    socket = new WebSocket("wss://guarded-beyond-14215.herokuapp.com//ws");
+    socket = new WebSocket("wss://https://gopal-bitwallet.herokuapp.com/ws");
     socket.onopen = () => {
         console.log("Successfully Connected");
         socket.send("Hi From the Client!")
@@ -42,6 +42,7 @@ function start(msg) {
     data = JSON.parse(msg.data);
     var html = '';
     var html2 = '';
+    var html3 = '';
     var j = 0;
     if (data.azione == 1) {
         myOutputs = [];
@@ -73,10 +74,14 @@ function start(msg) {
                 }
             }
         }
+        for (var i = data.block.length - 1; i >= 0; i--) {
+            html3 += '<div class="card"><a href="/block?id=' + data.block[i].id + '">' + data.block[i].hash + '</a></div>';
+        }
         document.getElementById("amount").innerText = amount;
         document.getElementById("tempamount").innerText = tempAmount;
         document.getElementById("transactions").innerHTML = html;
         document.getElementById("MyTransactions").innerHTML = html2;
+        document.getElementById("block").innerHTML = html3;
     }
     if (socket.readyState !== socket.OPEN) {
         startWebsocket();
@@ -90,16 +95,25 @@ function swithscreen(screen) {
             document.getElementById("transactions").style.display = 'block';
             document.getElementById("MyTransactions").style.display = 'none';
             document.getElementById("sendBit").style.display = 'none';
+            document.getElementById("block").style.display = 'none';
             break;
         case 2:
             document.getElementById("transactions").style.display = 'none';
             document.getElementById("MyTransactions").style.display = 'block';
             document.getElementById("sendBit").style.display = 'none';
+            document.getElementById("block").style.display = 'none';
             break;
         case 3:
             document.getElementById("transactions").style.display = 'none';
             document.getElementById("MyTransactions").style.display = 'none';
             document.getElementById("sendBit").style.display = 'block';
+            document.getElementById("block").style.display = 'none';
+            break;
+        case 4:
+            document.getElementById("transactions").style.display = 'none';
+            document.getElementById("MyTransactions").style.display = 'none';
+            document.getElementById("sendBit").style.display = 'none';
+            document.getElementById("block").style.display = 'block';
             break;
     }
 }

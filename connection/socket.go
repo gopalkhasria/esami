@@ -51,7 +51,8 @@ func reader(conn *websocket.Conn) {
 //SendMsg is for send the transactions to client
 func SendMsg() {
 	t := getTransactions()
-	m := msg{Azione: 1, Transaction: t}
+	tb := getBlocks()
+	m := msg{Azione: 1, Transaction: t, Block: tb}
 	bytes, _ := json.Marshal(m)
 	for client := range Clients {
 		err := client.WriteMessage(websocket.TextMessage, bytes)
@@ -66,6 +67,7 @@ func SendMsg() {
 type msg struct {
 	Azione      int           `json:"azione"`
 	Transaction []transaction `json:"transaction"`
+	Block       []block       `json:"block"`
 }
 
 type transaction struct {
@@ -82,6 +84,25 @@ type output struct {
 	PkScript string `json:"pkScript"`
 	Amount   string `json:"amount"`
 	Used     bool   `json:"used"`
+}
+
+type block struct {
+	ID   int    `json:"id"`
+	Hash string `json:"hash"`
+}
+
+func getBlocks() []block {
+	var t []block
+	rows, err := Db.Query(`SELECT hash, id FROM block ORDER BY id`)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for rows.Next() {
+		temp := block{}
+		_ = rows.Scan(&temp.Hash, &temp.ID)
+		t = append(t, temp)
+	}
+	return t
 }
 
 //GetTransactions fetch all transactions

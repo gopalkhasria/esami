@@ -9,8 +9,12 @@ import (
 	"strings"
 )
 
+//Work is for keep track if is maining or not
+var Work int
+
 //CheckTransactions is used for getting the id of non confirmed transaction
 func CheckTransactions() {
+	Work = 1
 	sqlStatement := `UPDATE transactions
 					SET block = '-2' 
 					WHERE  id in (
@@ -30,6 +34,7 @@ func CheckTransactions() {
 	if len(hashes) > 0 {
 		confirmTransactions(hashes)
 	} else {
+		Work = 0
 		fmt.Println("Nothing to do")
 	}
 }
@@ -58,7 +63,7 @@ func confirmTransactions(data []string) {
 					SET block = $1 
 					WHERE  id in (
 							SELECT id FROM transactions
-							WHERE  block = '-2')`
+							WHERE  block = '-2' OR block = '-1' LIMIT 5)`
 	connection.Db.QueryRow(sqlStatement, id)
 	connection.SendMsg()
 	CheckTransactions()
