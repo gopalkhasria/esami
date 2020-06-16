@@ -19,9 +19,14 @@ type data struct {
 	Token  string `json:"token"`
 }
 
-//Presentazione rispondo mandando la pagine della prresentazione
+//Presentazione rispondo mandando la pagine della presentazione
 func Presentazione(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "statics/presentazione.html")
+}
+
+//PresentazioneAction rispondo mandando la pagine per muovere la presentazione
+func PresentazioneAction(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "statics/presentazioneAction.html")
 }
 
 //Index test controller

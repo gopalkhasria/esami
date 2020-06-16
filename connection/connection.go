@@ -15,8 +15,8 @@ import (
 	user     = "postgres"
 	password = "root"
 	dbname   = "Bitcoin"
-)
-*/
+)*/
+
 //Db exported for use in another file
 var Db *sql.DB
 

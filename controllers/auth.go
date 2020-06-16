@@ -150,7 +150,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				Msg      string
 			}{
 				LogError: true,
-				Msg:      "Account not find",
+				Msg:      "Account not found",
 			})
 		} else {
 			if bcrypt.CompareHashAndPassword([]byte(data.Password), []byte(r.FormValue("password"))) != nil {

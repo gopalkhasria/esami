@@ -7,7 +7,7 @@ var myOutputs = [];
 var socket;
 startWebsocket();
 function startWebsocket() {
-    socket = new WebSocket("wss://https://gopal-bitwallet.herokuapp.com/ws");
+    socket = new WebSocket("wss://gopal-bitwallet.herokuapp.com/ws");
     socket.onopen = () => {
         console.log("Successfully Connected");
         socket.send("Hi From the Client!")

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Presentazione action</title>
+    <script>
+        var socket;
+        startWebsocket();
+        function startWebsocket() {
+            socket = new WebSocket("wss://gopal-bitwallet.herokuapp.com/presSocket");
+            socket.onopen = () => {
+                console.log("Successfully Connected");
+                socket.send("Hi From the Client!")
+            };
+            socket.onmessage = (msg) => {
+                action(msg.data)
+                //return false;
+            }
+            socket.onerror = error => {
+                console.log("Socket Error: ", error);
+            };
+
+            socket.onclose = event => {
+                console.log("Socket Closed Connection: ", event);
+                socket.send("Client Closed!")
+                socket = null
+                startWebsocket()
+            };
+        }
+
+        function action(event) {
+            console.log(event);
+        }
+    </script>
+</head>
+
+<body>
+    <div onclick="socket.send('1')" style="height: 30vh;">
+        <button onclick="socket.send('1')">Sopra</button>
+    </div>
+    <hr />
+    <div style="display: flex; justify-content: space-between; height: 30vh;">
+        <div onclick="socket.send('4')" style="width: 50vh;">
+            <button onclick="socket.send('4')">Sinistra</button>
+        </div>
+        <div onclick="socket.send('3')" style="width: 50vh;">
+            <button onclick="socket.send('3')">Destra</button>
+        </div>
+    </div>
+    <hr />
+    <div onclick="socket.send('2')" style="height: 30vh;">
+        <button onclick="socket.send('2')">Sotto</button>
+    </div>
+    </div>
+    </div>
+</body>
+
+</html>
