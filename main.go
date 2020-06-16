@@ -13,7 +13,7 @@ import (
 
 func main() {
 	connections.Connect()
-	fmt.Println("Listening on the port " + os.Getenv("PORT"))
+	fmt.Println("Listening on the port 5000")
 
 	http.HandleFunc("/", controllers.Index)
 	http.HandleFunc("/register", controllers.Register)
@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/makeTransaction", controllers.MakeTransaction)
 	http.HandleFunc("/transaction", controllers.GetTransaction)
 	http.HandleFunc("/block", controllers.GetBlock)
+	http.HandleFunc("/presentazione", controllers.Presentazione)
 	go models.CheckTransactions()
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))

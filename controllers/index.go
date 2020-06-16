@@ -19,6 +19,11 @@ type data struct {
 	Token  string `json:"token"`
 }
 
+//Presentazione rispondo mandando la pagine della prresentazione
+func Presentazione(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "statics/presentazione.html")
+}
+
 //Index test controller
 func Index(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("session_token")

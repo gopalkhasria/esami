@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentazione</title>
+    <link rel="shortcut icon" href="./statics/image/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./statics/css/reset.css">
+    <link rel="stylesheet" href="./statics/css/reveal.css">
+    <link rel="stylesheet" href="./statics/css/black.css" id="theme">
+    <link rel="stylesheet" href="./statics/css/background.css">
+    <link rel="stylesheet" href="./statics/css/monokai.css" id="highlight-theme">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/languages/go.min.js"></script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div id="particles-js"></div>
+        <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+        <script src="./statics/js/particle.js"></script>
+        <div class="slides">
+            <section>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <a href="https://revealjs.com">
+                        <img src="./statics/image/favicon.ico" alt="reveal.js logo"
+                            style="height: 150px; margin: 1.5rem auto 4rem auto; background: transparent;"
+                            class="demo-logo">
+                    </a>
+                    <h3 style="margin-left: 1.2rem; margin-bottom: 2rem;">Bitcoin Wallet</h3>
+                </div>
+                <h4>i fasi della transazione dei bitcoin</h4>
+                <p>
+                    <small>Creato da Gopal Singh</small>
+                </p>
+            </section>
+
+            <section>
+                <section>
+                    <h3>Bitcoin,la prima criptomoneta per valore</h3>
+                    <p>ma, cosa è un bitcoin?</p>
+                </section>
+                <section>
+                    <img src="./statics/image/bitcoinMondo.jpg" alt="Cosa pensa il mondo" />
+                </section>
+                <section>
+                    <img src="./statics/image/bitcointransaction.png" alt="Cosa pensa il mondo" />
+                </section>
+            </section>
+            <section>
+                <section>
+                    <p>
+                    <h2>ECDSA <h4>Elliptic Curve Digital Signature Algorithm</h4>
+                    </h2>
+                    </p>
+                </section>
+                <section>
+                    <img src="./statics/image/multi.png" alt="">
+                </section>
+                <section data-auto-animate>
+                    <img src="./statics/image/ecdsa.png" alt="">
+                </section>
+                <section data-auto-animate>
+                    <p style="font-size: 5rem;">X = nP</p>
+                </section>
+                <section data-auto-animate>
+                    <p>X = nP</p>
+                    <p>n = private key</p>
+                    <p>X = public key</p>
+                </section>
+            </section>
+            <section>
+                <section><img src="./statics/image/lock.png" alt="lock image" height="150px">
+                    <h2>JSON web tokens</h2>
+                </section>
+                <section>
+                    <img src="./statics/image/jwt.jpg" alt="jwt image">
+                </section>
+                <section data-auto-animate>
+                    <h3 data-id="code-title">Dati json per il token</h3>
+                    <pre data-id="code-animation"><code class="go" data-trim data-line-numbers>
+                    type Claims struct {
+                        Name string `json:"name"`
+                        Password string `json:"email"`
+                        Email string `json:"password"`
+                        ID int `json:"id"`
+                        jwt.StandardClaims
+                    }
+                	</code></pre>
+                </section>
+                <section data-auto-animate>
+                    <h3 data-id="code-title">Generazione token</h3>
+                    <pre data-id="code-animation"><code class="go" data-trim data-line-numbers>
+                    expirationTime := time.Now().Add(60 * time.Hour)
+                    claims := &Claims{
+                        Name: r.FormValue("name"),
+                        Password: r.FormValue("password"),
+                        Email: r.FormValue("email"),
+                        StandardClaims: jwt.StandardClaims{
+                            ExpiresAt: expirationTime.Unix(),
+                        },
+                    }
+                    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+                    tokenString, err := token.SignedString(JwtKey)
+                    </code></pre>
+                </section>
+                <section data-auto-animate>
+                    <h3 data-id="code-title">Validazione token</h3>
+                    <pre data-id="code-animation"><code class="go" data-trim data-line-numbers>
+                            claims := &Claims{}
+                            tkn, err := jwt.ParseWithClaims(token[0], ..... ) {
+                                return JwtKey, nil
+                            })
+                            if err != nil {
+                                ........
+                            }
+                            user := models.User{
+                                Name: claims.Name,
+                                Email: claims.Email,
+                                Password: claims.Password,
+                            }
+                        </code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <img src="./statics/image/golang.png" alt="Go" height="80px"
+                            style="margin-right: 2rem; margin-left: -2rem;">
+                        <span>vs</span>
+                        <img src="./statics/image/php.png" alt="Php" height="150px">
+                    </div>
+                </section>
+                <section>
+                    <p>Go ha funzionalità come channel e goroutine che non sono presenti nel caso del
+                        linguaggio PHP</p>
+                    <p class="fragment">Built-in tool per gestire le librerie di terze parti SE SERVONO</p>
+                    <p class="fragment">Variabili tipizzate</p>
+                    <p class="fragment">PERFORMANCE</p>
+                </section>
+            </section>
+            <section>
+                <img src="./statics/image/herokulogo.png" alt="Heroku logo">
+                Heroku (PaaS)
+            </section>
+            <section>
+                <section>
+                    <img src="./statics/image/postgresql.jpg" alt="Heroku logo">
+                    PostgreSQL
+                </section>
+                <section data-auto-animate>
+                    <h3 data-id="code-title">Sql vs PgSql</h3>
+                    <pre data-id="code-animation"><code class="SQL" data-trim data-line-numbers>
+                        CREATE TABLE IF NOT EXISTS users( id serial PRIMARY KEY, .......)
+
+
+                        CREATE TABLE IF NOT EXISTS users( id int PRIMARY KEY 
+                                                            AUTO_INCREMENT, .....)
+                    </code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>WBS e Gantt</h2>
+                </section>
+                <section>
+                    <img src="./statics/image/wbs.png" alt="wbs" height="650px">
+                </section>
+                <section>
+                    <img src="./statics/image/gantt.png" alt="wbs">
+                </section>
+            </section>
+        </div>
+    </div>
+    <script src="./statics/js/reveal.js"></script>
+    <script src="./statics/js/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: true,
+            hash: true,
+            //plugins: [RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight]
+            plugins: [RevealHighlight]
+        });
+
+    </script>
+</body>
+
+</html>
