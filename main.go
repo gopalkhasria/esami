@@ -13,7 +13,7 @@ import (
 
 func main() {
 	connections.Connect()
-	fmt.Println("Listening on the port 5000")
+	fmt.Println("Listening")
 
 	http.HandleFunc("/", controllers.Index)
 	http.HandleFunc("/register", controllers.Register)
