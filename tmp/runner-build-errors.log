@@ -1,0 +1,2 @@
+# bitcointransaction/connection
+connection\connection.go:27:34: undefined: os

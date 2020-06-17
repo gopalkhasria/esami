@@ -13,6 +13,11 @@
     <script src="./statics/js/presentazione.js"></script>
     <link rel="stylesheet" href="./statics/css/monokai.css" id="highlight-theme">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/languages/go.min.js"></script>
+    <style>
+        * {
+            user-select: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -126,7 +131,7 @@
             <section>
                 <section>
                     <div style="display: flex; justify-content: center; align-items: center;">
-                        <img src="./statics/image/golang.png" alt="Go" height="80px"
+                        <img src="./statics/image/gologo.png" alt="Go" height="150px"
                             style="margin-right: 2rem; margin-left: -2rem;">
                         <span>vs</span>
                         <img src="./statics/image/php.png" alt="Php" height="150px">
@@ -152,11 +157,11 @@
                 <section data-auto-animate>
                     <h3 data-id="code-title">Sql vs PgSql</h3>
                     <pre data-id="code-animation"><code class="SQL" data-trim data-line-numbers>
+                        CREATE TABLE IF NOT EXISTS users( id int PRIMARY KEY
+                                                        AUTO_INCREMENT, .....)
+
+
                         CREATE TABLE IF NOT EXISTS users( id serial PRIMARY KEY, .......)
-
-
-                        CREATE TABLE IF NOT EXISTS users( id int PRIMARY KEY 
-                                                            AUTO_INCREMENT, .....)
                     </code></pre>
                 </section>
             </section>
@@ -169,6 +174,9 @@
                 </section>
                 <section>
                     <img src="./statics/image/gantt.png" alt="wbs">
+                </section>
+                <section>
+                    <img src="./statics/image/db.png" alt="wbs">
                 </section>
             </section>
         </div>

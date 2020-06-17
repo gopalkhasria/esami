@@ -29,6 +29,11 @@ func PresentazioneAction(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "statics/presentazioneAction.html")
 }
 
+//PresentazioneActionTouch rispondo mandando la pagine per muovere la presentazione
+func PresentazioneActionTouch(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "statics/presentazioneActionTouch.html")
+}
+
 //Index test controller
 func Index(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("session_token")

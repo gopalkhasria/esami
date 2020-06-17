@@ -2,6 +2,7 @@ var socket;
 startWebsocket();
 function startWebsocket() {
     socket = new WebSocket("wss://gopal-bitwallet.herokuapp.com/presSocket");
+    //socket = new WebSocket("ws://localhost:5000/presSocket");
     socket.onopen = () => {
         console.log("Successfully Connected");
         socket.send("Hi From the Client!")
@@ -28,7 +29,7 @@ function startWebsocket() {
 }
 
 function action(event) {
-    console.log(event)
+    //console.log(event)
     switch (event) {
         case '4':
             Reveal.left();

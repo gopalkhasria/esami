@@ -27,9 +27,11 @@ func main() {
 	http.HandleFunc("/presentazione", controllers.Presentazione)
 	http.HandleFunc("/presSocket", connections.PresentazioneSocketStart)
 	http.HandleFunc("/actions", controllers.PresentazioneAction)
+	http.HandleFunc("/actionstouch", controllers.PresentazioneActionTouch)
 	go models.CheckTransactions()
 	fileServer := http.FileServer(http.Dir("./statics/"))
 	http.Handle("/statics/", http.StripPrefix("/statics", fileServer))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	//log.Fatal(http.ListenAndServe(":5000", nil))
 }
