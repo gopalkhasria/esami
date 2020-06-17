@@ -36,7 +36,6 @@ function action(event) {
             break;
         case '3':
             Reveal.right();
-            location.reload();
             break;
         case '1':
             Reveal.up();
