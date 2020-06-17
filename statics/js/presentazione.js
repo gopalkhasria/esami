@@ -33,10 +33,10 @@ function action(event) {
     switch (event) {
         case '4':
             Reveal.left();
-            location.reload();
             break;
         case '3':
             Reveal.right();
+            location.reload();
             break;
         case '1':
             Reveal.up();
